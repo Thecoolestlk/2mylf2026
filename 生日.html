@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>双层生日蛋糕·吹蜡烛许愿</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff5f7 0%, #fde2e4 100%);
+    font-family: "Microsoft YaHei", sans-serif;
+    padding: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* 彩色灯带 */
+  .light-strip {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    height: 30px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .light-bulb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    animation: lightFlicker 1.2s infinite alternate;
+  }
+  .light-bulb:nth-child(1n) { background: #ff4d6d; animation-delay: 0s; }
+  .light-bulb:nth-child(2n) { background: #4dabff; animation-delay: 0.2s; }
+  .light-bulb:nth-child(3n) { background: #ffd166; animation-delay: 0.4s; }
+  .light-bulb:nth-child(4n) { background: #06d6a0; animation-delay: 0.6s; }
+  .light-bulb:nth-child(5n) { background: #b185db; animation-delay: 0.8s; }
+  @keyframes lightFlicker {
+    0% { opacity: 0.6; transform: scale(0.9); box-shadow: 0 0 5px currentColor; }
+    100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 15px currentColor; }
+  }
+
+  /* 生日快乐文字 */
+  .birthday-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ff4488;
+    text-shadow: 2px 2px 4px rgba(255,182,193,0.8);
+    margin-bottom: 30px;
+    letter-spacing: 4px;
+    animation: textPulse 2s infinite alternate;
+  }
+  @keyframes textPulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+  }
+
+  /* ====================== 双层蛋糕容器 ====================== */
+  .cake-container {
+    position: relative;
+    width: 450px; /* 进一步减小容器宽度 */
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+  }
+
+  /* 蛋糕托盘 */
+  .cake-tray {
+    width: 410px; /* 减小托盘宽度 */
+    height: 40px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1), inset 0 -3px 8px rgba(0,0,0,0.05);
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  /* 下层蛋糕（大）- 进一步改小 */
+  .cake-bottom {
+    width: 350px; /* 从380px改为350px */
+    height: 160px;
+    background: #ffe0e9;
+    border-radius: 22px 22px 22px 22px;
+    position: absolute;
+    bottom: 40px; /* 放在托盘上方 */
+    z-index: 2;
+    box-shadow: inset 0 -8px 0 #ffc0d0, 0 6px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  
+  /* 上层蛋糕（小） */
+  .cake-top {
+    width: 250px; /* 略微减小上层蛋糕宽度 */
+    height: 120px;
+    background: #ffe0e9;
+    border-radius: 20px 20px 20px 20px;
+    position: absolute;
+    bottom: 190px; /* 调整：更靠近下层蛋糕 */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    box-shadow: inset 0 -6px 0 #ffc0d0, 0 6px 12px rgba(0,0,0,0.08);
+    overflow: visible; /* 改为visible，让蜡烛可以显示 */
+  }
+
+  /* 环形流光动画（双层通用） */
+  .cake-streamer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: streamerFlow 6s linear infinite;
+    border-radius: inherit;
+  }
+  @keyframes streamerFlow {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  /* 中心光晕扩散特效 */
+  .center-halo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: haloExpand 4s ease-out infinite;
+  }
+  @keyframes haloExpand {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+  }
+
+  /* 上层蛋糕的小号中心光晕 */
+  .cake-top .center-halo {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* =============== 整片白色奶油边 =============== */
+  /* 下层蛋糕奶油边 */
+  .cream-border-bottom {
+    position: absolute;
+    top: -15px;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    z-index: 4;
+  }
+  
+  /* 上层蛋糕奶油边 */
+  .cream-border-top {
+    position: absolute;
+    top: -12px;
+    left: 0;
+    width: 100%;
+    height: 25px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    z-index: 4;
+  }
+
+  /* 装饰容器 */
+  .toppings {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 5;
+  }
+
+  /* =============== 下层蛋糕装饰 =============== */
+  /* 草莓装饰 - 优化 */
+  .strawberry {
+    position: absolute;
+    width: 26px;
+    height: 30px;
+    background: linear-gradient(to bottom, #ff3355 70%, #ff1a40 100%);
+    border-radius: 50% 50% 35% 35%;
+    animation: strawberryBounce 3s ease-in-out infinite;
+    z-index: 6;
+    box-shadow: 0 2px 5px rgba(255,51,85,0.2);
+  }
+  @keyframes strawberryBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    30% { transform: translateY(-5px) rotate(2deg); }
+    60% { transform: translateY(-3px) rotate(-1deg); }
+  }
+  .strawberry::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 12px;
+    background: #3cb371;
+    border-radius: 2px 2px 4px 4px;
+    box-shadow: 0 1px 3px rgba(60,179,113,0.4);
+  }
+  .strawberry::after {
+    content: "";
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 2px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 1px;
+  }
+
+  /* 彩色小圆点 - 优化 */
+  .candy {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    animation: candyFloatRotate 4s linear infinite;
+    z-index: 6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  @keyframes candyFloatRotate {
+    0% { transform: rotate(0deg) translateY(0) scale(1); }
+    25% { transform: rotate(90deg) translateY(-3px) scale(1.1); }
+    50% { transform: rotate(180deg) translateY(0) scale(1); }
+    75% { transform: rotate(270deg) translateY(-2px) scale(1.05); }
+    100% { transform: rotate(360deg) translateY(0) scale(1); }
+  }
+  .candy-pink { background: linear-gradient(135deg, #ff8fab, #ff6b95); }
+  .candy-yellow { background: linear-gradient(135deg, #ffd700, #ffc400); }
+  .candy-blue { background: linear-gradient(135deg, #4dabff, #3a9eff); }
+  .candy-purple { background: linear-gradient(135deg, #b185db, #9d6fd8); }
+  .candy-green { background: linear-gradient(135deg, #06d6a0, #05c592); }
+  .candy-orange { background: linear-gradient(135deg, #ff9e6d, #ff8a4c); }
+
+  /* 爱心装饰 - 优化 */
+  .love-heart {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(135deg, #ff69b4, #ff4081);
+    transform: rotate(45deg);
+    animation: heartGlowFloat 2.5s infinite alternate ease-in-out;
+    z-index: 6;
+    box-shadow: 0 2px 8px rgba(255,105,180,0.3);
+  }
+  @keyframes heartGlowFloat {
+    0% { box-shadow: 0 0 5px #ff69b4; transform: rotate(45deg) translateY(0) scale(1); }
+    100% { box-shadow: 0 0 12px #ff69b4; transform: rotate(45deg) translateY(-4px) scale(1.1); }
+  }
+  .love-heart::before,
+  .love-heart::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: inherit;
+    border-radius: 50%;
+  }
+  .love-heart::before { top: -9px; left: 0; }
+  .love-heart::after { top: 0; left: -9px; }
+
+  /* 奶油裱花 - 优化 */
+  .cream-star {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle at 30% 30%, #ffffff, #f8f9fa);
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1), 0 0 8px rgba(255,255,255,0.5);
+    animation: creamBreatheFloat 3s infinite alternate;
+    z-index: 6;
+  }
+  @keyframes creamBreatheFloat {
+    0% { opacity: 0.9; transform: scale(0.9) translateY(0) rotate(0deg); box-shadow: 0 0 6px rgba(255,255,250,0.5); }
+    100% { opacity: 1; transform: scale(1.1) translateY(-3px) rotate(5deg); box-shadow: 0 0 12px rgba(255,255,255,0.9); }
+  }
+
+  /* 星光闪烁特效 - 优化 */
+  .star-twinkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #fff700;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    animation: starTwinkle 2s infinite alternate;
+    z-index: 6;
+    filter: drop-shadow(0 0 2px #fff700);
+  }
+  @keyframes starTwinkle {
+    0% { opacity: 0.4; transform: scale(0.8) rotate(0deg); }
+    50% { opacity: 0.8; transform: scale(1.1) rotate(10deg); }
+    100% { opacity: 1; transform: scale(1.2) rotate(0deg); }
+  }
+
+  /* =============== 下层蛋糕卡通图案 =============== */
+  /* 下层蛋糕左下角卡通图案 - 可爱猫咪 */
+  .kitty {
+    position: absolute;
+    width: 32px;
+    height: 26px;
+    background: linear-gradient(135deg, #ffb6c1, #ffa7b5);
+    border-radius: 50% 50% 40% 40%;
+    animation: kittyMeow 3.5s ease-in-out infinite;
+    z-index: 6;
+    box-shadow: 0 3px 8px rgba(255,182,193,0.3);
+  }
+  .kitty::before,
+  .kitty::after {
+    content: "";
+    position: absolute;
+    background: linear-gradient(135deg, #ffb6c1, #ffa7b5);
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    top: -6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .kitty::before { left: -4px; }
+  .kitty::after { right: -4px; }
+  
+  .kitty-eye {
+    position: absolute;
+    width: 5px;
+    height: 7px;
+    background: #333;
+    border-radius: 50%;
+    top: 8px;
+  }
+  .kitty-eye.left { left: 9px; }
+  .kitty-eye.right { right: 9px; }
+  
+  .kitty-nose {
+    position: absolute;
+    width: 6px;
+    height: 4px;
+    background: #ff8fab;
+    border-radius: 50%;
+    top: 14px;
+    left: 13px;
+  }
+  
+  .kitty-whisker {
+    position: absolute;
+    height: 1px;
+    background: #666;
+    top: 12px;
+  }
+  .kitty-whisker.left1 { left: 2px; width: 8px; transform: rotate(-10deg); }
+  .kitty-whisker.left2 { left: 2px; width: 8px; transform: rotate(10deg); top: 14px; }
+  .kitty-whisker.right1 { right: 2px; width: 8px; transform: rotate(10deg); }
+  .kitty-whisker.right2 { right: 2px; width: 8px; transform: rotate(-10deg); top: 14px; }
+  
+  @keyframes kittyMeow {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    30% { transform: translateY(-4px) rotate(2deg); }
+    70% { transform: translateY(-2px) rotate(-1deg); }
+  }
+
+  /* 下层蛋糕右下角卡通图案 - 简化海星（只有五角星形状） */
+  .starfish {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #ff6b6b, #ff5252);
+    clip-path: polygon(
+      50% 0%,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 91%,
+      50% 70%,
+      21% 91%,
+      32% 57%,
+      2% 35%,
+      39% 35%
+    );
+    animation: starfishDance 4s ease-in-out infinite;
+    z-index: 6;
+    box-shadow: 0 3px 8px rgba(255,107,107,0.3);
+  }
+  @keyframes starfishDance {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(15deg) scale(1.1); }
+    50% { transform: rotate(0deg) scale(1.05); }
+    75% { transform: rotate(-15deg) scale(1.1); }
+  }
+
+  /* =============== 上层蛋糕卡通图案 =============== */
+  /* 小兔子图案 - 优化 */
+  .bunny {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #ffb6c1, #ffa7b5);
+    border-radius: 50%;
+    animation: bunnyJump 3s ease-in-out infinite;
+    z-index: 6;
+    box-shadow: 0 3px 8px rgba(255,182,193,0.3);
+  }
+  .bunny::before,
+  .bunny::after {
+    content: "";
+    position: absolute;
+    background: linear-gradient(135deg, #ffb6c1, #ffa7b5);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .bunny::before {
+    width: 14px;
+    height: 14px;
+    top: -8px;
+    left: -6px;
+  }
+  .bunny::after {
+    width: 14px;
+    height: 14px;
+    top: -8px;
+    right: -6px;
+  }
+  
+  .bunny-eye {
+    position: absolute;
+    width: 4px;
+    height: 6px;
+    background: #333;
+    border-radius: 50%;
+    top: 10px;
+  }
+  .bunny-eye.left { left: 8px; }
+  .bunny-eye.right { right: 8px; }
+  
+  .bunny-nose {
+    position: absolute;
+    width: 5px;
+    height: 3px;
+    background: #ff8fab;
+    border-radius: 50%;
+    top: 16px;
+    left: 11.5px;
+  }
+  
+  @keyframes bunnyJump {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    30% { transform: translateY(-6px) rotate(3deg); }
+    70% { transform: translateY(-4px) rotate(-2deg); }
+  }
+
+  /* 小鸭子图案 - 优化 */
+  .duck {
+    position: absolute;
+    width: 24px;
+    height: 20px;
+    background: linear-gradient(135deg, #FFD700, #FFC400);
+    border-radius: 50% 50% 40% 40%;
+    animation: duckFloat 3.5s ease-in-out infinite;
+    z-index: 6;
+    box-shadow: 0 3px 8px rgba(255,215,0,0.3);
+  }
+  .duck::before {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 8px;
+    background: #FFA500;
+    border-radius: 50%;
+    top: -4px;
+    right: -3px;
+  }
+  
+  .duck-eye {
+    position: absolute;
+    width: 4px;
+    height: 6px;
+    background: #333;
+    border-radius: 50%;
+    top: 6px;
+    left: 6px;
+  }
+  
+  .duck-beak {
+    position: absolute;
+    width: 6px;
+    height: 4px;
+    background: #ff8c00;
+    border-radius: 50%;
+    top: 4px;
+    right: 2px;
+  }
+  
+  @keyframes duckFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    30% { transform: translateY(-5px) rotate(4deg); }
+    70% { transform: translateY(-3px) rotate(-2deg); }
+  }
+
+  /* 星星糖片 - 优化 */
+  .star-candy {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #FF69B4, #ff4081);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    animation: starSpin 5s linear infinite;
+    z-index: 6;
+    box-shadow: 0 3px 8px rgba(255,105,180,0.3);
+  }
+  @keyframes starSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.15); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  /* 月亮图案 - 优化（移除黑色部分） */
+  .moon {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #FFD700, #ffc400);
+    border-radius: 50%;
+    animation: moonGlow 4s ease-in-out infinite;
+    z-index: 6;
+  }
+  .moon::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #ffe0e9;
+    border-radius: 50%;
+    top: 3px;
+    left: -5px;
+  }
+  
+  @keyframes moonGlow {
+    0%, 100% { box-shadow: 0 0 8px #FFD700; transform: scale(1); }
+    50% { box-shadow: 0 0 16px #FFD700; transform: scale(1.1); }
+  }
+
+  /* 云朵图案 - 优化并移到中间 */
+  .cloud {
+    position: absolute;
+    width: 26px;
+    height: 16px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 50%;
+    animation: cloudFloat 4s ease-in-out infinite;
+    z-index: 6;
+    box-shadow: 0 3px 8px rgba(255,255,255,0.5);
+  }
+  .cloud::before,
+  .cloud::after {
+    content: "";
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+    box-shadow: inherit;
+  }
+  .cloud::before {
+    width: 12px;
+    height: 12px;
+    top: -5px;
+    left: 4px;
+  }
+  .cloud::after {
+    width: 10px;
+    height: 10px;
+    top: -4px;
+    right: 5px;
+  }
+  
+  .cloud-face {
+    position: absolute;
+    width: 3px;
+    height: 5px;
+    background: #666;
+    border-radius: 50%;
+  }
+  .cloud-eye.left { top: 4px; left: 6px; }
+  .cloud-eye.right { top: 4px; right: 8px; }
+  
+  .cloud-smile {
+    position: absolute;
+    width: 8px;
+    height: 4px;
+    border-bottom: 2px solid #666;
+    border-radius: 0 0 10px 10px;
+    bottom: 3px;
+    left: 9px;
+  }
+  
+  @keyframes cloudFloat {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    30% { transform: translateY(-3px) translateX(3px); }
+    70% { transform: translateY(-2px) translateX(-2px); }
+  }
+
+  /* =============== 优化后的爱心卡通图案（更小版） =============== */
+  .cute-heart {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #ff3366, #ff6699, #ff3366);
+    transform: rotate(45deg);
+    animation: cuteHeartBeat 2s infinite alternate ease-in-out;
+    z-index: 6;
+    box-shadow: 
+      0 0 8px rgba(255,51,102,0.4),
+      inset 0 0 12px rgba(255,255,255,0.3),
+      0 0 0 1px rgba(255,255,255,0.2);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+  }
+  
+  .cute-heart::before,
+  .cute-heart::after {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: inherit;
+    border-radius: 50%;
+  }
+  
+  .cute-heart::before { 
+    top: -11px; 
+    left: 0; 
+    background: linear-gradient(135deg, #ff6699, #ff3366);
+  }
+  
+  .cute-heart::after { 
+    top: 0; 
+    left: -11px; 
+    background: linear-gradient(135deg, #ff3366, #ff6699);
+  }
+  
+  /* 爱心内部高光效果 */
+  .cute-heart .heart-highlight {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), transparent 70%);
+    border-radius: 50%;
+    top: 6px;
+    left: 6px;
+    transform: rotate(-45deg);
+    z-index: 7;
+  }
+  
+  /* 爱心内部小爱心装饰 */
+  .cute-heart .heart-inner {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,0.25);
+    transform: rotate(-45deg);
+    top: 8px;
+    left: 8px;
+    border-radius: 50% 50% 0 0;
+    z-index: 7;
+  }
+  
+  .cute-heart .heart-inner::before,
+  .cute-heart .heart-inner::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+  }
+  
+  .cute-heart .heart-inner::before { top: -3px; left: 0; }
+  .cute-heart .heart-inner::after { top: 0; left: -3px; }
+  
+  @keyframes cuteHeartBeat {
+    0% { 
+      transform: rotate(45deg) scale(1); 
+      box-shadow: 
+        0 0 8px rgba(255,51,102,0.4),
+        inset 0 0 12px rgba(255,255,255,0.3);
+    }
+    50% { 
+      transform: rotate(45deg) scale(1.05); 
+      box-shadow: 
+        0 0 12px rgba(255,51,102,0.6),
+        inset 0 0 15px rgba(255,255,255,0.4);
+    }
+    100% { 
+      transform: rotate(45deg) scale(1.08); 
+      box-shadow: 
+        0 0 15px rgba(255,51,102,0.7),
+        inset 0 0 18px rgba(255,255,255,0.5);
+    }
+  }
+
+  /* =============== 小羊卡通图案 =============== */
+  .sheep {
+    position: absolute;
+    width: 30px;
+    height: 26px;
+    animation: sheepBounce 3.5s ease-in-out infinite;
+    z-index: 6;
+  }
+  
+  /* 小羊身体 */
+  .sheep-body {
+    position: absolute;
+    width: 26px;
+    height: 18px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 50% 50% 40% 40%;
+    top: 8px;
+    left: 2px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 6;
+  }
+  
+  /* 小羊头 */
+  .sheep-head {
+    position: absolute;
+    width: 20px;
+    height: 18px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 50% 50% 40% 40%;
+    top: 0;
+    left: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 7;
+  }
+  
+  /* 小羊耳朵 */
+  .sheep-ear {
+    position: absolute;
+    width: 8px;
+    height: 6px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 50%;
+    top: -2px;
+  }
+  
+  .sheep-ear.left {
+    left: 3px;
+    transform: rotate(-15deg);
+  }
+  
+  .sheep-ear.right {
+    right: 3px;
+    transform: rotate(15deg);
+  }
+  
+  /* 小羊毛茸茸效果 */
+  .sheep-fluff {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .sheep-fluff.top-left {
+    top: 2px;
+    left: 4px;
+  }
+  
+  .sheep-fluff.top-right {
+    top: 2px;
+    right: 4px;
+  }
+  
+  .sheep-fluff.bottom-left {
+    bottom: 3px;
+    left: 6px;
+  }
+  
+  .sheep-fluff.bottom-right {
+    bottom: 3px;
+    right: 6px;
+  }
+  
+  /* 小羊眼睛 */
+  .sheep-eye {
+    position: absolute;
+    width: 4px;
+    height: 5px;
+    background: #333;
+    border-radius: 50%;
+    top: 8px;
+  }
+  
+  .sheep-eye.left {
+    left: 5px;
+  }
+  
+  .sheep-eye.right {
+    right: 5px;
+  }
+  
+  /* 小羊鼻子 */
+  .sheep-nose {
+    position: absolute;
+    width: 6px;
+    height: 4px;
+    background: #ffb6c1;
+    border-radius: 40%;
+    top: 12px;
+    left: 7px;
+  }
+  
+  /* 小羊角 */
+  .sheep-horn {
+    position: absolute;
+    width: 8px;
+    height: 4px;
+    background: linear-gradient(135deg, #f4a460, #d2691e);
+    border-radius: 50%;
+    top: 5px;
+  }
+  
+  .sheep-horn.left {
+    left: 0;
+    transform: rotate(-30deg);
+  }
+  
+  .sheep-horn.right {
+    right: 0;
+    transform: rotate(30deg);
+  }
+  
+  @keyframes sheepBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    30% { transform: translateY(-4px) rotate(1deg); }
+    70% { transform: translateY(-2px) rotate(-1deg); }
+  }
+
+  /* 流星划过特效 - 下层 */
+  .meteor {
+    position: absolute;
+    width: 35px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffd166, transparent);
+    opacity: 0;
+    animation: meteorFlyBottom 5s linear infinite;
+    z-index: 3;
+  }
+  @keyframes meteorFlyBottom {
+    0% { transform: translate(-35px, 0) rotate(45deg); opacity: 0; }
+    20% { opacity: 1; }
+    40% { transform: translate(350px, 160px) rotate(45deg); opacity: 0; }
+    100% { transform: translate(350px, 160px) rotate(45deg); opacity: 0; }
+  }
+  
+  /* 流星划过特效 - 上层 */
+  .meteor-small {
+    position: absolute;
+    width: 35px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffd166, transparent);
+    opacity: 0;
+    animation: meteorFlyTop 5s linear infinite;
+    z-index: 4;
+  }
+  @keyframes meteorFlyTop {
+    0% { transform: translate(-35px, 0) rotate(45deg); opacity: 0; }
+    20% { opacity: 1; }
+    40% { transform: translate(250px, 120px) rotate(45deg); opacity: 0; }
+    100% { transform: translate(250px, 120px) rotate(45deg); opacity: 0; }
+  }
+
+  /* =============== 重新设计蜡烛部分 =============== */
+  /* 蜡烛容器 - 直接放在蛋糕容器内，在上层蛋糕上方 */
+  .candle-container {
+    position: absolute;
+    top: 70px; /* 进一步调整使蜡烛更靠上，底部在上层蛋糕白色奶油部分 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 80px;
+    z-index: 1000; /* 提高z-index确保在最上层 */
+  }
+  
+  /* 蜡烛杆 */
+  .candle-stick {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px; /* 缩短蜡烛杆高度 */
+    background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+    border-radius: 4px 4px 2px 2px;
+    box-shadow: inset 0 -4px 0 #e0e0e0, 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1001;
+  }
+
+  /* 蜡烛顶部（蜡油效果） */
+  .candle-top {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 8px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    z-index: 1002;
+  }
+
+  /* 火焰动画 + 火星飞溅特效 - 位置下移 */
+  .candle-flame {
+    position: absolute;
+    top: -15px; /* 下移火焰，减少与蜡烛顶端的空隙 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 35px;
+    background: radial-gradient(circle, #fff700 0%, #ff6700 80%);
+    border-radius: 50% 50% 20% 20%;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+    animation: flame-flicker 0.7s infinite alternate ease-in-out;
+    z-index: 1003;
+    filter: drop-shadow(0 0 5px rgba(255,103,0,0.6));
+  }
+  @keyframes flame-flicker {
+    0% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+    100% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+  }
+  
+  /* 火星特效 */
+  .spark {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #ff6700;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: 1004;
+    filter: drop-shadow(0 0 2px #ff6700);
+  }
+  .flame-extinguish {
+    opacity: 0 !important;
+    animation: none;
+  }
+  /* ====================== 蛋糕样式结束 ====================== */
+
+  /* 许愿文字 */
+  .wish-text {
+    font-size: 24px;
+    color: #ff4488;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.5s ease;
+    z-index: 10;
+    text-shadow: 1px 1px 3px rgba(255,182,193,0.5);
+    animation: textGlow 3s infinite alternate;
+  }
+  @keyframes textGlow {
+    0% { text-shadow: 1px 1px 3px rgba(255,182,193,0.5); }
+    100% { text-shadow: 1px 1px 8px rgba(255,182,193,0.8); }
+  }
+
+  /* 吹气进度条 */
+  .blow-progress {
+    width: 300px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    margin-top: 15px;
+    overflow: hidden;
+    display: none;
+  }
+  
+  .blow-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4dabff, #06d6a0);
+    border-radius: 10px;
+    transition: width 0.2s ease;
+  }
+
+  /* 花瓣飘落样式 */
+  .petal {
+    position: absolute;
+    top: -10px;
+    opacity: 0.8;
+    border-radius: 50% 50% 30% 50%;
+    pointer-events: none;
+    animation: fall linear infinite;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+  }
+  @keyframes fall {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(120px, 850px) rotate(360deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+  <!-- 顶部彩色灯带 -->
+  <div class="light-strip">
+    <div class="light-bulb"></div>
+    <div class="light-bulb"></div>
+    <div class="light-bulb"></div>
+    <div class="light-bulb"></div>
+    <div class="light-bulb"></div>
+    <div class="light-bulb"></div>
+    <div class="light-bulb"></div>
+  </div>
+
+  <!-- 生日快乐标题 -->
+  <h1 class="birthday-title">生日快乐 🎂</h1>
+
+  <!-- 双层蛋糕结构 -->
+  <div class="cake-container">
+    <div class="cake-tray"></div>
+    
+    <!-- 下层大蛋糕 -->
+    <div class="cake-bottom">
+      <div class="cake-streamer"></div>
+      <div class="center-halo"></div>
+      <div class="meteor" style="top: 30px; animation-delay: 0s;"></div>
+      <div class="meteor" style="top: 80px; animation-delay: 2s; background: linear-gradient(90deg, transparent, #ff4d6d, transparent);"></div>
+      
+      <!-- 下层蛋糕整片白色奶油边 -->
+      <div class="cream-border-bottom"></div>
+      
+      <!-- 下层装饰 - 减少彩色小圆点，均匀分布，新增左下角和右下角卡通图案 -->
+      <div class="toppings">
+        <!-- 第一行：左侧 -->
+        <div class="strawberry" style="top:25px; left:35px;"></div>
+        <div class="love-heart" style="top:40px; left:75px;"></div>
+        
+        <!-- 第一行：右侧 -->
+        <div class="strawberry" style="top:25px; right:35px;"></div>
+        <div class="love-heart" style="top:40px; right:75px;"></div>
+        
+        <!-- 第二行：左侧 - 左下方增加装饰 -->
+        <div class="candy candy-blue" style="top:100px; left:45px;"></div>
+        <div class="cream-star" style="top:120px; left:90px;"></div>
+        
+        <!-- 第二行：右侧 -->
+        <div class="candy candy-purple" style="top:100px; right:45px;"></div>
+        <div class="cream-star" style="top:120px; right:90px;"></div>
+        
+        <!-- 中间区域 -->
+        <div class="strawberry" style="top:80px; left:150px;"></div>
+        <div class="strawberry" style="top:80px; right:150px;"></div>
+        <div class="love-heart" style="top:40px; left:185px;"></div>
+        <div class="love-heart" style="top:40px; right:185px;"></div>
+        
+        <!-- 减少彩色小圆点数量，更均匀分布 -->
+        <!-- 左下方区域增加装饰 -->
+        <div class="candy candy-pink" style="top:130px; left:55px;"></div>
+        <div class="candy candy-yellow" style="top:140px; left:110px;"></div>
+        <div class="star-twinkle" style="top:110px; left:25px;"></div>
+        
+        <!-- 右下方区域 -->
+        <div class="candy candy-green" style="top:130px; right:55px;"></div>
+        <div class="candy candy-orange" style="top:140px; right:110px;"></div>
+        <div class="star-twinkle" style="top:110px; right:25px;"></div>
+        
+        <!-- 中间上方区域 -->
+        <div class="candy candy-blue" style="top:50px; left:130px;"></div>
+        <div class="candy candy-purple" style="top:50px; right:130px;"></div>
+        
+        <!-- 中间下方区域 -->
+        <div class="candy candy-pink" style="top:100px; left:185px;"></div>
+        <div class="candy candy-yellow" style="top:100px; right:185px;"></div>
+        
+        <!-- 新增：下层蛋糕左下角卡通图案 - 可爱猫咪 -->
+        <div class="kitty" style="bottom:15px; left:25px;">
+          <div class="kitty-eye left"></div>
+          <div class="kitty-eye right"></div>
+          <div class="kitty-nose"></div>
+          <div class="kitty-whisker left1"></div>
+          <div class="kitty-whisker left2"></div>
+          <div class="kitty-whisker right1"></div>
+          <div class="kitty-whisker right2"></div>
+        </div>
+        
+        <!-- 新增：下层蛋糕右下角卡通图案 - 简化海星（只有五角星形状） -->
+        <div class="starfish" style="bottom:15px; right:25px;"></div>
+      </div>
+    </div>
+    
+    <!-- 上层小蛋糕 -->
+    <div class="cake-top">
+      <div class="cake-streamer"></div>
+      <div class="center-halo" style="width: 40px; height: 40px;"></div>
+      <div class="meteor-small" style="top:20px; animation-delay: 1s;"></div>
+      
+      <!-- 上层蛋糕整片白色奶油边 -->
+      <div class="cream-border-top"></div>
+      
+      <!-- 上层装饰 - 减少彩色小圆点，均匀分布 -->
+      <div class="toppings">
+        <!-- 左上角：小兔子 -->
+        <div class="bunny" style="top:20px; left:25px;">
+          <div class="bunny-eye left"></div>
+          <div class="bunny-eye right"></div>
+          <div class="bunny-nose"></div>
+        </div>
+        <!-- 右上角：优化后的爱心卡通图案（更小版） -->
+        <div class="cute-heart" style="top:15px; right:20px;">
+          <div class="heart-highlight"></div>
+          <div class="heart-inner"></div>
+        </div>
+        <!-- 右上角爱心下方：小羊卡通图案 -->
+        <div class="sheep" style="top:45px; right:20px;">
+          <div class="sheep-body">
+            <div class="sheep-fluff top-left"></div>
+            <div class="sheep-fluff top-right"></div>
+            <div class="sheep-fluff bottom-left"></div>
+            <div class="sheep-fluff bottom-right"></div>
+          </div>
+          <div class="sheep-head">
+            <div class="sheep-ear left"></div>
+            <div class="sheep-ear right"></div>
+            <div class="sheep-eye left"></div>
+            <div class="sheep-eye right"></div>
+            <div class="sheep-nose"></div>
+            <div class="sheep-horn left"></div>
+            <div class="sheep-horn right"></div>
+          </div>
+        </div>
+        <!-- 中间偏左：小鸭子 -->
+        <div class="duck" style="top:55px; left:55px;">
+          <div class="duck-eye"></div>
+          <div class="duck-beak"></div>
+        </div>
+        <!-- 中间：云朵图案 -->
+        <div class="cloud" style="top:50px; left:50%; transform: translateX(-50%);">
+          <div class="cloud-face cloud-eye left"></div>
+          <div class="cloud-face cloud-eye right"></div>
+          <div class="cloud-smile"></div>
+        </div>
+        <!-- 左下角：月亮图案（已移除黑色部分） -->
+        <div class="moon" style="top:65px; left:15px;"></div>
+        <!-- 右下角：星星糖片 -->
+        <div class="star-candy" style="top:45px; right:45px;"></div>
+        <!-- 中心：闪烁星星 -->
+        <div class="star-twinkle" style="top:35px; left:90px; transform: scale(1.2);"></div>
+        <div class="star-twinkle" style="top:75px; left:110px; transform: scale(0.9);"></div>
+        
+        <!-- 上层蛋糕减少彩色小圆点，均匀分布 -->
+        <div class="candy candy-pink" style="top:15px; left:70px;"></div>
+        <div class="candy candy-yellow" style="top:15px; right:70px;"></div>
+        <!-- 蓝色小圆点往下移（从top:45px改为top:70px） -->
+        <div class="candy candy-blue" style="top:70px; left:130px;"></div>
+        <div class="candy candy-purple" style="top:70px; right:115px;"></div>
+        <div class="candy candy-green" style="top:75px; left:35px;"></div>
+        <div class="candy candy-orange" style="top:75px; right:35px;"></div>
+        <div class="candy candy-pink" style="top:95px; left:85px;"></div>
+        <div class="candy candy-yellow" style="top:95px; right:85px;"></div>
+      </div>
+    </div>
+    
+    <!-- 蜡烛容器 - 独立放在蛋糕容器内，在上层蛋糕上方 -->
+    <div class="candle-container">
+      <div class="candle-stick">
+        <div class="candle-top"></div>
+      </div>
+      <div class="candle-flame" id="flame"></div>
+    </div>
+  </div>
+
+  <div class="wish-text" id="wishText">许个生日愿望吧</div>
+  <div class="blow-progress" id="blowProgress">
+    <div class="blow-progress-bar" id="blowProgressBar"></div>
+  </div>
+
+  <script>
+    const flame = document.getElementById('flame');
+    const wishText = document.getElementById('wishText');
+    const blowProgress = document.getElementById('blowProgress');
+    const blowProgressBar = document.getElementById('blowProgressBar');
+    
+    let isBlown = false;
+    const VOLUME_THRESHOLD = 0.12;
+    
+    // 新增：吹气计时相关变量
+    let blowStartTime = 0;
+    let isBlowing = false;
+    const BLOW_DURATION_REQUIRED = 300; // 需要持续吹气0.3秒（从500改为300）
+    let blowTimeout = null;
+    let blowInterval = null;
+
+    // 火星飞溅效果生成
+    function createSparks() {
+      if (isBlown) return;
+      const spark = document.createElement('div');
+      spark.className = 'spark';
+      const x = (Math.random() - 0.5) * 12;
+      const y = -Math.random() * 18;
+      const duration = Math.random() * 1 + 0.5;
+      
+      spark.style.left = '50%';
+      spark.style.top = '0';
+      spark.style.animation = `sparkFly ${duration}s linear forwards`;
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes sparkFly {
+          0% { transform: translate(0, 0); opacity: 1; }
+          100% { transform: translate(${x}px, ${y}px); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      flame.parentNode.appendChild(spark);
+      
+      setTimeout(() => spark.remove(), duration * 1000);
+    }
+    setInterval(createSparks, 180);
+
+    // 花瓣生成逻辑
+    function createPetal() {
+      if(isBlown) return;
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      const colors = ['#ffc0cb', '#ff8fab', '#f8bbd0', '#ffe4e1', '#ffb6c1'];
+      petal.style.background = colors[Math.floor(Math.random() * colors.length)];
+      petal.style.left = Math.random() * window.innerWidth + 'px';
+      petal.style.width = Math.random() * 10 + 8 + 'px';
+      petal.style.height = Math.random() * 12 + 10 + 'px';
+      petal.style.animationDuration = Math.random() * 4 + 5 + 's';
+      document.body.appendChild(petal);
+      setTimeout(() => petal.remove(), 8000);
+    }
+    setInterval(createPetal, 250);
+
+    // 开始吹气检测
+    function startBlowing() {
+      if (!isBlowing) {
+        isBlowing = true;
+        blowStartTime = Date.now();
+        blowProgress.style.display = 'block';
+        wishText.textContent = '吹气中... 💨';
+        wishText.style.color = '#4dabff';
+        
+        // 更新进度条
+        blowInterval = setInterval(() => {
+          if (isBlowing) {
+            const elapsed = Date.now() - blowStartTime;
+            const progress = Math.min(elapsed / BLOW_DURATION_REQUIRED * 100, 100);
+            blowProgressBar.style.width = progress + '%';
+            
+            // 根据进度改变进度条颜色
+            if (progress < 50) {
+              blowProgressBar.style.background = 'linear-gradient(90deg, #ff4d6d, #ff8e00)';
+            } else if (progress < 80) {
+              blowProgressBar.style.background = 'linear-gradient(90deg, #ff8e00, #ffd700)';
+            } else {
+              blowProgressBar.style.background = 'linear-gradient(90deg, #ffd700, #06d6a0)';
+            }
+          }
+        }, 50);
+      }
+    }
+
+    // 停止吹气检测
+    function stopBlowing() {
+      if (isBlowing) {
+        clearInterval(blowInterval);
+        isBlowing = false;
+        blowProgressBar.style.width = '0%';
+        blowProgress.style.display = 'none';
+        wishText.textContent = '继续吹气...';
+        wishText.style.color = '#ff4488';
+      }
+    }
+
+    // 成功吹灭蜡烛
+    function extinguishCandle() {
+      clearInterval(blowInterval);
+      isBlowing = false;
+      isBlown = true;
+      
+      flame.classList.add('flame-extinguish');
+      blowProgressBar.style.width = '0%';
+      blowProgress.style.display = 'none';
+      
+      wishText.textContent = '✨ 愿望一定会实现 ✨';
+      wishText.style.color = '#d81b60';
+      wishText.style.fontSize = '28px';
+      wishText.style.textShadow = '0 0 10px rgba(216,27,96,0.5)';
+      
+      // 添加庆祝效果
+      createCelebration();
+    }
+
+    // 吹蜡烛音频检测
+    async function startListen() {
+      if (isBlown) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const source = audioCtx.createMediaStreamSource(stream);
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        function detectBlow() {
+          if (isBlown) return;
+          analyser.getByteFrequencyData(dataArray);
+          const sum = dataArray.reduce((acc, val) => acc + val, 0);
+          const volumeLevel = sum / bufferLength / 255;
+
+          if (volumeLevel > VOLUME_THRESHOLD) {
+            // 检测到吹气，开始计时
+            startBlowing();
+            
+            // 检查是否达到要求的吹气时长
+            const elapsed = Date.now() - blowStartTime;
+            if (elapsed >= BLOW_DURATION_REQUIRED) {
+              extinguishCandle();
+              return;
+            }
+          } else {
+            // 音量低于阈值，停止吹气计时
+            stopBlowing();
+          }
+          requestAnimationFrame(detectBlow);
+        }
+        detectBlow();
+      } catch (err) {
+        alert('请允许麦克风权限，才能体验吹蜡烛效果哦！');
+        console.error('音频初始化失败：', err);
+      }
+    }
+
+    // 庆祝效果
+    function createCelebration() {
+      // 创建更多花瓣
+      for (let i = 0; i < 15; i++) {
+        setTimeout(createPetal, i * 100);
+      }
+      
+      // 创建彩色星星
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          const star = document.createElement('div');
+          star.className = 'star-twinkle';
+          star.style.position = 'absolute';
+          star.style.left = Math.random() * window.innerWidth + 'px';
+          star.style.top = Math.random() * window.innerHeight + 'px';
+          star.style.width = '12px';
+          star.style.height = '12px';
+          star.style.animationDuration = '1s';
+          star.style.zIndex = '999';
+          document.body.appendChild(star);
+          
+          setTimeout(() => star.remove(), 2000);
+        }, i * 150);
+      }
+    }
+
+    document.addEventListener('click', startListen);
+  </script>
+</body>
+</html>
